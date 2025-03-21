@@ -1,5 +1,6 @@
 #include "stack.h"
-
+#include <stdlib.h>
+#include <stdio.h>
 /**
  * Crea una nueva pila vacía y la devuelve.
  * 
@@ -9,7 +10,9 @@
  *          está vacía y top apunta a NULL
  */
 Stack *stack_create(){
-
+    Stack *s = (Stack*)malloc(sizeof(Stack));
+    s->top = NULL;
+    return s;
 }
 
 /**
@@ -21,7 +24,12 @@ Stack *stack_create(){
  *          o el puntero `s` es NULL, la función no realiza ninguna operación.
  */
 void stack_push(Stack* s, Data d){
-
+    if(s != NULL){
+        Node *new = new_node(d);
+        new->next = s->top;
+        s->top = new;
+        return;
+    }
 }
 
 /**
@@ -34,7 +42,13 @@ void stack_push(Stack* s, Data d){
  *          Si la pila está vacía, no se realiza ninguna operación y se devuelve un valor de error.
  */
 Data stack_pop(Stack* s){
-
+    Data t = s->top->data;
+    if(!stack_is_empty(s)){
+        Node *temp = s->top;
+        s->top = temp->next; 
+        free(t);
+        t == NULL;
+    }
 }
 
 /**
@@ -46,7 +60,11 @@ Data stack_pop(Stack* s){
  *          como `stack_pop` en una pila vacía.
  */
 int stack_is_empty(Stack* s){
-
+    if(s->top == NULL){
+        return 1;
+    }else{
+        return 0;
+    }
 }
 
 /**
@@ -58,7 +76,10 @@ int stack_is_empty(Stack* s){
  *          La memoria de los elementos eliminados se libera adecuadamente.
  */
 void stack_empty(Stack* s){
-
+    while (!stack_is_empty(s)){
+        stack_pop(s);
+    }
+    
 }
 
 /**
@@ -71,7 +92,14 @@ void stack_empty(Stack* s){
  *          de ser eliminada.
  */
 void stack_delete(Stack *s){
-
+    if(stack_is_empty(s)){ 
+        free(s);
+        s = NULL;
+    }else{
+        stack_empty(s);
+        free(s);
+        s = NULL;
+    }
 }
 
 /**
@@ -84,5 +112,13 @@ void stack_delete(Stack *s){
  *          la salida estándar (stdout).
  */
 void stack_print(Stack *s){
-
+    if(stack_is_empty(s)){
+        printf("[ ]\n");
+    }else{
+        printf("[");
+        for(Node *a = s; s->top != NULL; s->top->next){
+            printf(" %i ", s->top->data);
+        }
+        printf("]");
+    }
 }
