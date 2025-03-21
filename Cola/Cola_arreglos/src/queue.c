@@ -9,7 +9,11 @@
  * @details Esta función inicializa una cola vacía. 
  */
 Queue queue_create(){
-
+    Queue q;
+    q.head = -1;
+    q.tail = -1;
+    q.len = 0;
+    return q;
 }
 
 /**
@@ -20,7 +24,17 @@ Queue queue_create(){
  * @details Esta función añade el dato `d` al final de la cola.
  */
 void queue_enqueue(Queue* q, Data d){
-
+    if(queue_is_empty(q)){
+        q->head = q->tail = 0;
+        q->datos[q->tail] = d;
+        return;
+    }
+    if(q->tail < TAM-1){
+        q->tail++;
+        q->datos[q->tail] = d;
+        return;
+    }
+printf("La cola esta llena\n");
 }
 
 /**
@@ -33,7 +47,16 @@ void queue_enqueue(Queue* q, Data d){
  *          Si la cola está vacía, no se realiza ninguna operación y se devuelve un valor de error.
  */
 Data queue_dequeue(Queue* q){
-
+    if(!queue_is_empty(q)){
+        Data t = q->datos[0];
+        for(int i = 1; i<= q->tail; i++){
+            q->datos[i-1] = q->datos[i];
+        }
+        q->tail--;
+        return t;
+    }
+    printf("La cola esta vacia\n");
+    return 0;
 }
 
 /**
@@ -45,7 +68,7 @@ Data queue_dequeue(Queue* q){
  *          como `queue_dequeue` en una cola vacía.
  */
 bool queue_is_empty(Queue* q){
-
+    return q->tail == -1;
 }
 
 /**
@@ -57,7 +80,11 @@ bool queue_is_empty(Queue* q){
  *          Si la cola está vacía, no se realiza ninguna operación y se devuelve un valor de error.
  */
 Data queue_front(Queue* q){
-
+    if(queue_is_empty(q)){
+        printf("La cola esta vacia\n");
+        return 0;
+    }
+    return q->datos[q->head];
 }
 
 /**
@@ -67,6 +94,8 @@ Data queue_front(Queue* q){
  * @details Esta función hace que los índices head y tail tomen el valor de -1
  */
 void queue_empty(Queue* q){
-
+    while (!queue_is_empty(q)){
+        queue_dequeue(q);
+    } 
 }
 
