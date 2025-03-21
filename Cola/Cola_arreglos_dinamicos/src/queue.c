@@ -8,11 +8,10 @@
  * @return Una nueva cola vacía. Si la creación falla, el estado de la cola es inválido.
  * @details Esta función inicializa una cola vacía. Asigna memoria dinàmica con malloc al arreglo data usando len
  */
-Queue queue_create(){
+Queue queue_create(int len){
     Queue q;
-    q.head = -1;
-    q.tail = -1;
-    q.len = 0;
+    q.data = (Data*)malloc(sizeof(Data)*len);
+    q.tail = q.head = -1;
     return q;
 }
 
@@ -26,15 +25,15 @@ Queue queue_create(){
 void queue_enqueue(Queue* q, Data d){
     if(queue_is_empty(q)){
         q->head = q->tail = 0;
-        q->datos[q->tail] = d;
+        q->data[q->tail] = d;
         return;
     }
-    if(q->tail < TAM-1){
+    if(q->tail < q->len-1){
         q->tail++;
-        q->datos[q->tail] = d;
+        q->data[q->tail] = d;
         return;
     }
-printf("La cola esta llena\n");
+    printf("La cola esta llena\n");
 }
 
 /**
@@ -47,12 +46,17 @@ printf("La cola esta llena\n");
  *          Si la cola está vacía, no se realiza ninguna operación y se devuelve un valor de error.
  */
 Data queue_dequeue(Queue* q){
-    if(!queue_is_empty(q)){
-        Data t = q->datos[0];
-        for(int i = 1; i<= q->tail; i++){
-            q->datos[i-1] = q->datos[i];
+    Data t = q->data[q->head];
+    if(!queue_is_empty){
+        if(q->head == q->tail){
+            q->head = q->tail = -1;
+            q->len = 0;
+        }else{
+            for(int i = 1; i < q->tail; i++){
+                q->data[i-1] = q->data[i]; 
+            }
+            q->tail--;
         }
-        q->tail--;
         return t;
     }
     printf("La cola esta vacia\n");
@@ -80,11 +84,7 @@ bool queue_is_empty(Queue* q){
  *          Si la cola está vacía, no se realiza ninguna operación y se devuelve un valor de error.
  */
 Data queue_front(Queue* q){
-    if(queue_is_empty(q)){
-        printf("La cola esta vacia\n");
-        return 0;
-    }
-    return q->datos[q->head];
+    return q->data[q->head];
 }
 
 /**
@@ -94,7 +94,22 @@ Data queue_front(Queue* q){
  * @details Esta función hace que los índices head y tail tomen el valor de -1
  */
 void queue_empty(Queue* q){
-    while (!queue_is_empty(q)){
+    while(!queue_is_empty(q)){
         queue_dequeue(q);
-    } 
+    }
+}
+
+/**
+ * Elimina la cola y libera la memoria asociada a ella.
+ * 
+ * @param q Referencia a la cola que se desea eliminar.
+ * @details Esta función libera la memoria asignada dinámicamente para datos
+ *          utilizando `free`. Es responsabilidad del llamante asegurarse de que la cola ya no se utiliza después
+ *          de ser eliminada.
+ */
+void queue_delete(Queue* q){
+    if(queue_is_empty(q)){
+        free(q);
+        q = NULL;
+    }    
 }
