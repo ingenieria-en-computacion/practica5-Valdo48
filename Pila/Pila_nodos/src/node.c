@@ -1,5 +1,6 @@
 #include "node.h"
-
+#include <stdlib.h>
+#include <stdio.h>
 /**
  * Crea un nuevo nodo con los datos proporcionados y lo devuelve.
  * 
